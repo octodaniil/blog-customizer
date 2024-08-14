@@ -1,5 +1,5 @@
 import arrow from 'src/images/arrow.svg';
-import clsx from 'clsx'
+import clsx from 'clsx';
 import styles from './ArrowButton.module.scss';
 
 export type OnClick = {
