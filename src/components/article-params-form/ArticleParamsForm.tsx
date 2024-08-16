@@ -2,7 +2,7 @@ import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
 
 import styles from './ArticleParamsForm.module.scss';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Select } from '../select/Select';
 import {
 	ArticleStateType,
@@ -18,16 +18,15 @@ import { Text } from '../text/Text';
 import { Separator } from '../separator/Separator';
 import { RadioGroup } from '../radio-group/RadioGroup';
 import clsx from 'clsx';
+
 export type ArticleParamsFormSettings = {
 	setSiteSettings: (value: ArticleStateType) => void;
 };
 
 export const ArticleParamsForm = (props: ArticleParamsFormSettings) => {
 	const { setSiteSettings } = props;
-
 	const [isOpen, setOpen] = useState(false);
-	const [optionValue, setOptionValue] =
-		useState<ArticleStateType>(defaultArticleState);
+	const [optionValue, setOptionValue] = useState<ArticleStateType>(defaultArticleState);
 
 	const handleToggleOpen = () => {
 		setOpen((currentIsOpen) => !currentIsOpen);
@@ -54,6 +53,24 @@ export const ArticleParamsForm = (props: ArticleParamsFormSettings) => {
 		event.preventDefault();
 		setSiteSettings(optionValue);
 	};
+
+	const handleClickOutside = (event: MouseEvent) => {
+		const formElement = document.querySelector(`.${styles.container}`);
+		if (formElement && !formElement.contains(event.target as Node)) {
+			setOpen(false);
+		}
+	};
+
+	useEffect(() => {
+		if (isOpen) {
+			document.addEventListener('mousedown', handleClickOutside);
+		} else {
+			document.removeEventListener('mousedown', handleClickOutside);
+		}
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isOpen]);
 
 	return (
 		<>
